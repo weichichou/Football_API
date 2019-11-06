@@ -1,6 +1,7 @@
 const { Router } = require('express')
 const Player = require('./model')
 const Team = require('../team/model')
+const City = require('../city/model')
 
 const router = new Router()
 
@@ -17,11 +18,13 @@ router.post('/players', (req, res, next)=>{
 })
 
 router.get('/players/:id', (req, res, next)=>{
+    // UNDERSTAND WHY WE USE { include: [Team] }
     Player.findByPk(req.params.id, { include: [Team] })
         .then(player => {
             if(!player){
                 res.status(404).end();
             }else{
+                //只想印出特定資訊：姓名，隊伍，城市？
                 res.json(player);
             }
         })

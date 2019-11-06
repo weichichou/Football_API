@@ -6,6 +6,7 @@ const app = express()
 //const Team = require('./team/model') 
 const teamRouter = require('./team/router')
 const playerRouter = require('./player/router')
+const cityRouter = require('./city/router')
 
 const { Router } = express
 const router = new Router()
@@ -16,6 +17,7 @@ app.use(bodyParser.json())
 app.use(router)
 app.use(teamRouter)
 app.use(playerRouter)
+app.use(cityRouter)
 
 const port = process.env.PORT || 4000
 app.listen(port, ()=> console.log('Listening on port' + port))
