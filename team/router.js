@@ -4,6 +4,7 @@ const Team = require('./model')
 const router = new Router()
 
 router.get('/team', (req, res, next)=> {
+    //有沒有findAll有差嗎？
     Team.findAll()
         .then(list => res.send(list))
         .catch(err => next(err))
