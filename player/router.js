@@ -20,31 +20,36 @@ router.post('/players', (req, res, next)=>{
 router.get('/players/:id', (req, res, next)=>{
     // UNDERSTAND WHY WE USE { include: [Team] }
     // 而且為什麼是放在findByPk這裡呢？
-    Player.findByPk(req.params.id, { include: [Team] })
+    Player.findByPk(req.params.id, { include: [{
+        model: Team,
+        include:[City]
+    }] })
         .then(player => {
             if(!player){
                 res.status(404).end();
             }else{
                 //只想印出特定資訊：姓名，隊伍，城市？
-                res.json(player);
+                const response = {
+                    name: player.name,
+                    teamName: player.team.name,
+                    cityName: player.team.city.name
+                };
+                res.json(response);
             }
         })
         .catch(next);
 })
 
 router.get('/players/searchByTeam/:teamName', (req, res, next) => {
-    let searchTeam = Team.findOne({
+    Team.findOne({
         where: {name: req.params.teamName}
-    })
-    console.log('searh Team', searchTeam)
-    //searchTeam is a Promise 
-
-    let searchId = searchTeam.then(data => data.json())
-    console.log('search id', searchId)
-
-    Player.findAll({where: {teamId: searchId}})
-        .then(list => res.send(list))
+    }).then(data => Promise.resolve(data.id))
+    .then(teamId => {
+        Player.findAll({where: {teamId: teamId}})
+        .then(list => res.send(list.map(item => ({name: item.name, number: item.number}))))
         .catch(next)
+    })
+
 })
 
 module.exports = router
