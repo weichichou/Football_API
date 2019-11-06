@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const db = require('./db') 
+const db = require('./db')
+const Team = require('./team/model') 
 
 const { Router } = express
 const router = new Router()
