@@ -19,6 +19,7 @@ router.post('/players', (req, res, next)=>{
 
 router.get('/players/:id', (req, res, next)=>{
     // UNDERSTAND WHY WE USE { include: [Team] }
+    // 而且為什麼是放在findByPk這裡呢？
     Player.findByPk(req.params.id, { include: [Team] })
         .then(player => {
             if(!player){
@@ -29,6 +30,21 @@ router.get('/players/:id', (req, res, next)=>{
             }
         })
         .catch(next);
+})
+
+router.get('/players/searchByTeam/:teamName', (req, res, next) => {
+    let searchTeam = Team.findOne({
+        where: {name: req.params.teamName}
+    })
+    console.log('searh Team', searchTeam)
+    //searchTeam is a Promise 
+
+    let searchId = searchTeam.then(data => data.json())
+    console.log('search id', searchId)
+
+    Player.findAll({where: {teamId: searchId}})
+        .then(list => res.send(list))
+        .catch(next)
 })
 
 module.exports = router
